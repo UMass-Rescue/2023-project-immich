@@ -6,7 +6,7 @@
     "dev": "cross-env NODE_ENV=dev npm run dev:all",
     "dev:all": "concurrently -n=svelte,electron -c='#ff3e00',blue \"npm run dev:svelte\" \"npm run dev:electron\"",
     "build:svelte": "vite build",
-    "build:electron:windows": "electron-builder -win --config build.config.json",
+    "build:electron:windows": "electron-builder --win --config build.config.json",
     "build:electron:default": "electron-builder -mwl --config build.config.json",
     "build:electron": "run-script-os",
     "build": "cross-env NODE_ENV=production npm run build:svelte && npm run build:electron",
