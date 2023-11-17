@@ -9,7 +9,7 @@
 		"src/preload.cjs",
 		{
 			"from": "build",
-			"to": ""
+			"to": "src"
 		}
 	]
 }

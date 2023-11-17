@@ -1,11 +1,14 @@
 {
   "name": "immich-web",
+  "main": "src/electron.cjs",
   "version": "1.0.0",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev npm run dev:all",
     "dev:all": "concurrently -n=svelte,electron -c='#ff3e00',blue \"npm run dev:svelte\" \"npm run dev:electron\"",
     "build:svelte": "vite build",
-    "build:electron": "electron-builder --win --config build.config.json",
+    "build:electron:windows": "electron-builder -win --config build.config.json",
+    "build:electron:default": "electron-builder -mwl --config build.config.json",
+    "build:electron": "run-script-os",
     "build": "cross-env NODE_ENV=production npm run build:svelte && npm run build:electron",
     "dev:electron": "electron src/electron.cjs",
     "dev:svelte": "vite dev --host 0.0.0.0 --port 3000",
@@ -89,6 +92,7 @@
     "lodash-es": "^4.17.21",
     "luxon": "^3.2.1",
     "maplibre-gl": "^3.6.0",
+    "run-script-os": "^1.1.6",
     "socket.io-client": "^4.6.1",
     "svelte-loading-spinners": "^0.3.4",
     "svelte-local-storage-store": "^0.6.0",

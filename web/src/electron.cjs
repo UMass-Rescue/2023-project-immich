@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const contextMenu = require('electron-context-menu');
 const serve = require('electron-serve');
 const path = require('path');
+var cp = require('child_process')
 
 try {
 	require('electron-reloader')(module);
@@ -16,6 +17,10 @@ const dev = !app.isPackaged;
 let mainWindow;
 
 function createWindow() {
+	if (!dev) {
+        cp.fork(path.resolve(__dirname, 'index.js'));
+	}
+
 	let windowState = windowStateManager({
 		defaultWidth: 800,
 		defaultHeight: 600,
@@ -85,8 +90,13 @@ function createMainWindow() {
 		mainWindow = null;
 	});
 
-	if (dev) loadVite(port);
-	else serveURL(mainWindow);
+	loadVite(port);
+	// It would be good to use below instead of line above.
+	// Currently we loadthe page from localhost, but it's
+	// better to load it using inter-process communication (IPC),
+	// which is done somehow by passing mainWindow to serveURL below.
+	//if (dev) loadVite(port);
+	//else serveURL(mainWindow);
 }
 
 app.once('ready', createMainWindow);
