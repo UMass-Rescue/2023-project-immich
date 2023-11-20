@@ -28,8 +28,8 @@ function createWindow() {
 
 	const mainWindow = new BrowserWindow({
 		backgroundColor: 'whitesmoke',
-		titleBarStyle: 'hidden',
-		autoHideMenuBar: true,
+		//titleBarStyle: 'hidden',
+		autoHideMenuBar: false,
 		trafficLightPosition: {
 			x: 17,
 			y: 32,
@@ -41,7 +41,7 @@ function createWindow() {
 			contextIsolation: true,
 			nodeIntegration: true,
 			spellcheck: false,
-			devTools: dev,
+			devTools: true,
 			preload: path.join(__dirname, 'preload.cjs'),
 		},
 		x: windowState.x,
