@@ -17,6 +17,8 @@ services:
       - redis
       - database
       - typesense
+    ports:
+      - 3001:3001
 
   immich-microservices:
     container_name: immich_microservices
@@ -38,18 +40,6 @@ services:
       - immich-server
       - typesense
     restart: always
-
-  immich-web:
-    container_name: immich_web
-    image: immich-web:latest
-    build:
-      context: ../web
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    restart: always
-    depends_on:
-      - immich-server
 
   immich-machine-learning:
     container_name: immich_machine_learning
