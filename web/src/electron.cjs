@@ -12,14 +12,23 @@ try {
 }
 
 const serveURL = serve({ directory: '.' });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 const dev = !app.isPackaged;
 let mainWindow;
 
 function createWindow() {
-	if (!dev) {
-        cp.fork(path.resolve(__dirname, 'index.js'));
-	}
+    cp.fork(path.resolve(__dirname, 'immich/main.js'),
+                         [],
+                         { env: {
+                             DB_PASSWORD: 'postgres',
+                             DB_DATABASE_NAME: 'immich',
+                             DB_USERNAME: 'postgres',
+                             NODE_ENV: 'production',
+                             TYPESENSE_HOST: 'localhost',
+                             TYPESENSE_API_KEY: 'some-random-text',
+                             REDIS_HOSTNAME: 'localhost'
+                         }});
+
 
 	let windowState = windowStateManager({
 		defaultWidth: 800,
@@ -79,7 +88,7 @@ function loadVite(port) {
 	mainWindow.loadURL(`http://localhost:${port}`).catch((e) => {
 		console.log('Error loading URL, retrying', e);
 		setTimeout(() => {
-			loadVite(port);
+            loadVite(port);
 		}, 200);
 	});
 }

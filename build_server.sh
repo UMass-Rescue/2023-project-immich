@@ -25,7 +25,7 @@ echo building client
 cd -
 cp -r web/* /tmp/immich_staging
 cd /tmp/immich_staging
-npm run build
+npm run build:svelte
 mv build www
 rm -rf node_modules
 
@@ -35,4 +35,5 @@ cp server/package.json /tmp/immich_staging
 cp server/package-lock.json /tmp/immich_staging
 cp docker/example.env /tmp/immich_staging/.env
 mv /tmp/immich_staging/server_node_modules /tmp/immich_staging/node_modules
-cd /tmp/immich_staging
+
+cp -r /tmp/immich_staging web/staging

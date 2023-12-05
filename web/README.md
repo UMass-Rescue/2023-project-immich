@@ -36,3 +36,44 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## Electron
+
+**Currently supported on OSX only.**
+
+Building Electron is still very brittle right now. The process is multistage. First run the following; it
+will create a temp folder and replicate the steps in ../server/Dockerfile to build both server and web. It
+will then copy the folder to `web/staging`.
+
+```bash
+./build_server.sh
+```
+
+We now have all the files necessary to build electron. 
+
+```bash
+cd staging
+npm run build:electron
+```
+
+If successful, you should find build files in `staging/dist`. We still require the following command to finish
+the build.
+
+```bash
+cp -r www "dist/mac/Sveltekit Electron.app/Contents/MacOS"
+```
+
+### Running the executable
+
+Things will totally crash if you don't first run the server locally. You can do so with the following (requires docker)
+
+```bash
+cd docker
+source example.env
+docker-compose -f docker-compose.no-serv.yml up
+```
+
+For some reason, it is still not possible to run the executable by double-clicking on the `Sveltekit Electron` app:
+`dist/mac/Sveltekit Electron.app`. Instead, you must right-client and "Show Package Contents", then navigate to
+`ist/mac/Sveltekit Electron.app/Contents/MacOS`. Double-clicking on that `Sveltekit Electron` executable will open
+a window that actually loads the web page.
