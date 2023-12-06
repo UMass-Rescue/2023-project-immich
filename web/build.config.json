@@ -4,6 +4,12 @@
 	"directories": {
 		"output": "dist"
 	},
+    "extraFiles": [
+        {
+            "from": "www",
+            "to": "www"
+        }
+    ],
 	"files": [
 		"src/electron.cjs",
 		"src/preload.cjs",

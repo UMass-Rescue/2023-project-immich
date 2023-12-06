@@ -56,12 +56,7 @@ cd staging
 npm run build:electron
 ```
 
-If successful, you should find build files in `staging/dist`. We still require the following command to finish
-the build.
-
-```bash
-cp -r www "dist/mac/Sveltekit Electron.app/Contents/MacOS"
-```
+If successful, you should find build files in `staging/dist`. 
 
 ### Running the executable
 
