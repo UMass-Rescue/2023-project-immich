@@ -39,20 +39,26 @@ You can preview the production build with `npm run preview`.
 
 ## Electron
 
-**Currently supported on OSX only.**
-
 Building Electron is still very brittle right now. The process is multistage. First run the following; it
 will create a temp folder and replicate the steps in ../server/Dockerfile to build both server and web. It
 will then copy the folder to `web/staging`.
 
+### OSX
+
 ```bash
 ./build_server.sh
+```
+
+### Windows
+```
+./build_server.ps1
 ```
 
 We now have all the files necessary to build electron. 
 
 ```bash
 cd staging
+npm install -g electron-builder
 npm run build:electron
 ```
 

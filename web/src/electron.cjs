@@ -17,9 +17,12 @@ const dev = !app.isPackaged;
 let mainWindow;
 
 function createWindow() {
-    cp.fork(path.resolve(__dirname, 'immich/main.js'),
+    child = cp.fork(path.resolve(__dirname, 'immich/main.js'),
                          [],
-                         { env: {
+                         { 
+                            silent: true,
+                            detached: true,
+                            env: {
                              DB_PASSWORD: 'postgres',
                              DB_DATABASE_NAME: 'immich',
                              DB_USERNAME: 'postgres',
@@ -27,7 +30,22 @@ function createWindow() {
                              TYPESENSE_HOST: 'localhost',
                              TYPESENSE_API_KEY: 'some-random-text',
                              REDIS_HOSTNAME: 'localhost'
-                         }});
+                            }
+                         });
+	child.on('error', (err) => {
+		console.log("\n\t\tERROR: spawn failed! (" + err + ")");
+	});
+
+	child.stderr.on('data', function(data) {
+		console.log('stdout: ' +data);
+	});
+
+	child.on('exit', (code, signal) => {
+		console.log(code);
+		console.log(signal);
+ 	});
+
+	child.unref();
 
 
 	let windowState = windowStateManager({

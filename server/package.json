@@ -18,6 +18,7 @@
     "nest": "nest",
     "start:dev": "nest start --watch --",
     "start:debug": "nest start --debug 0.0.0.0:9230 --watch --",
+    "build:electron:windows": "electron-builder --win --config build.config.json",
     "build:electron:default": "electron-builder -mwl --config build.config.json",
     "build:electron": "run-script-os",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --max-warnings 0",

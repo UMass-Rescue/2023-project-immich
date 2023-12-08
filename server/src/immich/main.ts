@@ -34,3 +34,4 @@ export async function bootstrap() {
 
   logger.log(`Immich Server is listening on ${await app.getUrl()} [v${serverVersion}] [${envName}] `);
 }
+bootstrap();
