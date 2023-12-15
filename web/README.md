@@ -58,6 +58,17 @@ We now have all the files necessary to build electron.
 
 ```bash
 cd staging
+vim build/immich/main.js # change line 30 to `app.useStaticAssets('../www');`
+```
+
+#### OSX specific
+
+```bash
+npm rebuild # this step is not usually necessary on windows
+
+
+#### All OSes
+```bash
 npm install -g electron-builder
 npm run build:electron
 ```
