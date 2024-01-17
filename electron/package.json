@@ -1,0 +1,15 @@
+{
+  "name": "immich-electron",
+  "version": "0.0.1",
+  "description": "Electron wrapper for immich",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "UMass Rescue Lab",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^28.1.4"
+  }
+}
