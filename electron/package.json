@@ -5,11 +5,22 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "build:windows": "electron-builder --win",
+    "build:default": "electron-builder -mwl",
+    "build": "run-script-os",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "UMass Rescue Lab",
   "license": "ISC",
-  "dependencies": {
-    "electron": "^28.1.4"
+  "devDependencies": {
+    "electron": "^28.1.4",
+    "electron-builder": "^24.9.1",
+    "run-script-os": "^1.1.6"
+  },
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "your.app.category.type"
+    }
   }
 }
