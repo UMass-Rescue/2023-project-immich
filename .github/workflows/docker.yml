@@ -3,9 +3,9 @@ name: Docker
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, electron_client_side]
   pull_request:
-    branches: [main]
+    branches: [main, electron_client_side]
   release:
     types: [published]
 
