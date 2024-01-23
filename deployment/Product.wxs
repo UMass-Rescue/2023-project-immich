@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*"
+           Language="1033"
+           Manufacturer="UMass Rescue Lab"
+           Name="Rescue Gallery"
+           UpgradeCode="{FFA6A5DE-5551-4A45-B3B5-0C2F78E605AA}"
+           Version="0.0.1">
+
+    <Package InstallScope="perMachine" InstallerVersion="200" Compressed="yes" />
+
+    <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="MY_INSTALL_LOCATION" Name="Rescue Gallery" />
+      </Directory>
+    </Directory>
+
+    <ComponentGroup Directory="MY_INSTALL_LOCATION" Id="ProductComponentGroup">
+      <Component Id="startup_ps1">
+        <File KeyPath="yes" Source="startup.ps1"></File>
+      </Component>
+      <Component Id="docker_compose_ghcr_yml">
+        <File KeyPath="yes" Source="docker-compose.ghcr.yml"></File>
+      </Component>
+    </ComponentGroup>
+
+    <Feature Id="RescueGalleryFeature">
+      <ComponentGroupRef Id="ProductComponentGroup" />
+    </Feature>
+
+  </Product>
+</Wix>
