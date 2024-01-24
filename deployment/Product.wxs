@@ -21,10 +21,13 @@
 
     <ComponentGroup Directory="MY_INSTALL_LOCATION" Id="ProductComponentGroup">
       <Component Id="startup_ps1">
-        <File KeyPath="yes" Source="startup.ps1"></File>
+        <File KeyPath="yes" Source="startup.exe"></File>
       </Component>
       <Component Id="docker_compose_ghcr_yml">
         <File KeyPath="yes" Source="docker-compose.ghcr.yml"></File>
+      </Component>
+      <Component Id="_env">
+        <File KeyPath="yes" Source=".env"></File>
       </Component>
     </ComponentGroup>
 
