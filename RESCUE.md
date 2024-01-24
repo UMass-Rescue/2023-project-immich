@@ -1,6 +1,22 @@
 # Rescue Lab Immich Instance
 
-## Docker
+## Client
+
+## Development
+
+```bash
+npm run start
+```
+
+## Deployment
+
+```bash
+npm run build
+```
+
+## Server
+
+### Development
 
 ```bash
 cd docker
@@ -10,9 +26,7 @@ docker login ghcr.io -u gbiss -p $env:CR_PAT
 docker-compose -f docker-compose.ghcr.yml up -V
 ```
 
-## Deployment
-
-### Server
+### Deployment
 
 One-time setup. Install the [latest release] of WiX. Then install ps2exe.
 
