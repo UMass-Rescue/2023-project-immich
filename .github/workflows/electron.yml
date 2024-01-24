@@ -15,6 +15,7 @@ jobs:
         with:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org"
+      - run: cd electron
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-artifact@v4
