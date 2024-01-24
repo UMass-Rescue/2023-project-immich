@@ -3,10 +3,10 @@ name: Build Electron
 on:
   push:
     branches: [ main,electron_client_side ]
-    paths: ['electron']
+    paths: ['electron/**']
   pull_request:
     branches: [ main,electron_client_side ]
-    paths: ['electron']
+    paths: ['electron/**']
 
 jobs:
   build:
