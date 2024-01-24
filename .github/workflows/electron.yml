@@ -25,4 +25,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: D:\a\2023-project-immich\2023-project-immich\electron\dist
