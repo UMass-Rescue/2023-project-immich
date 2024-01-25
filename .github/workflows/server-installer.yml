@@ -1,0 +1,19 @@
+name: Build Server Installer
+
+on:
+  push:
+    branches: [ main,electron_client_side ]
+  pull_request:
+    branches: [ main,electron_client_side ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ./electron
+    steps:
+      - env:
+          token: ${{TEST_SECRET}}
+      - uses: actions/checkout@v4
+      - run: echo $env:token
