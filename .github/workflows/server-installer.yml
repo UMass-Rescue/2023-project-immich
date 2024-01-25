@@ -11,5 +11,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - run: $env:TOKEN = "${{ secrets.TEST_SECRET }}"
-      - run: $env:TOKEN -eq 1
+      - run: echo $env:TOKEN 
+        env: 
+          TOKEN: "${{ secrets.TEST_SECRET }}"
