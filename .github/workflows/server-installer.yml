@@ -14,10 +14,11 @@ jobs:
         working-directory: ./deployment
     steps:
       - uses: actions/checkout@v4
-      - run: echo $env:TOKEN | Out-File foo 
+      - run: cp startup.tpl startup.ps1
+      - run: (Get-Content -path startup.ps1 -Raw) -replace '{TOKEN}', $env:TOKEN | Set-Content startup.ps1
         env: 
           TOKEN: "${{ secrets.TEST_SECRET }}"
       - uses: actions/upload-artifact@v4
         with:
-          name: foo
-          path: D:\a\2023-project-immich\2023-project-immich\deployment\foo
+          name: startup
+          path: D:\a\2023-project-immich\2023-project-immich\deployment\startup.ps1
