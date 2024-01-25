@@ -13,7 +13,7 @@ jobs:
       run:
         working-directory: ./deployment
     steps:
-      - shell: pwsh
+      - name: Build server installer action
         env:
           TOKEN: ${{secrets.TEST_SECRET}}
         run: |
