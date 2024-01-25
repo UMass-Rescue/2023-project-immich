@@ -11,4 +11,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo ${{secrets.TOKEN}}
+        with:
+          TOKEN: ${{secrets.TOKEN}}
+      - run: echo $env:TOKEN
