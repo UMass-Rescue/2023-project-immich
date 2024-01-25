@@ -12,5 +12,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          TOKEN: ${{secrets.TOKEN}}
+          TOKEN: ${{secrets.TEST_SECRET}}
       - run: echo $env:TOKEN
