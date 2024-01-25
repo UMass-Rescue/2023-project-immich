@@ -18,7 +18,9 @@ jobs:
       - run: (Get-Content -path startup.ps1 -Raw) -replace '{TOKEN}', $env:TOKEN | Set-Content startup.ps1
         env: 
           TOKEN: "${{ secrets.TEST_SECRET }}"
+      - run: Install-Module -Name ps2exe
+      - run: ps2exe .\startup.ps1
       - uses: actions/upload-artifact@v4
         with:
           name: startup
-          path: D:\a\2023-project-immich\2023-project-immich\deployment\startup.ps1
+          path: D:\a\2023-project-immich\2023-project-immich\deployment\startup.exe
