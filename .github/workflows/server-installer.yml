@@ -14,6 +14,5 @@ jobs:
         working-directory: ./electron
     steps:
       - uses: actions/checkout@v4
-      - env:
-          token: ${{TEST_SECRET}}
+      - run: $env:token = ${{TEST_SECRET}}
       - run: echo $env:token
