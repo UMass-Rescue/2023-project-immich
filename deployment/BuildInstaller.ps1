@@ -1,5 +1,5 @@
-$candleToolPath = Join-Path $env:wix -ChildPath candle.exe
-$lightToolPath = Join-Path $env:wix -ChildPath light.exe
+$candleToolPath = Join-Path $env:WIX -ChildPath candle.exe
+$lightToolPath = Join-Path $env:WIX -ChildPath light.exe
 
 try
 {
