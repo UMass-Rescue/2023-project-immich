@@ -3,8 +3,10 @@ name: Build Server Installer
 on:
   push:
     branches: [ main,electron_client_side ]
+    paths: ['deployment/**']
   pull_request:
     branches: [ main,electron_client_side ]
+    paths: ['deployment/**']
 
 jobs:
   build:
