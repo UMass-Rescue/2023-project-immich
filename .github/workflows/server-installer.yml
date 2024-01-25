@@ -11,7 +11,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo $env:TOKEN 
-      - run: echo $env:TOKEN -eq 1 
+      - run: echo $env:TOKEN | Out-File foo 
         env: 
           TOKEN: "${{ secrets.TEST_SECRET }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: foo
+          path: D:\a\2023-project-immich\2023-project-immich\foo
