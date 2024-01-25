@@ -19,7 +19,7 @@ jobs:
       - run: cp startup.tpl startup.ps1
       - run: (Get-Content -path startup.ps1 -Raw) -replace '{TOKEN}', $env:TOKEN | Set-Content startup.ps1
         env: 
-          TOKEN: "${{ secrets.TEST_SECRET }}"
+          TOKEN: "${{ secrets.EXTERNAL_GITHUB_TOKEN }}"
       - run: .\BuildInstaller.ps1
         env:
           WIX: D:\a\2023-project-immich\2023-project-immich\deployment\wix
