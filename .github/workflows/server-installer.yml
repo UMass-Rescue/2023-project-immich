@@ -13,5 +13,7 @@ jobs:
       - name: Build server installer action
         env:
           TOKEN: ${{secrets.TEST_SECRET}}
+        uses: actions/checkout@v4
         run: |
+          cd deployment
           echo $env:token
