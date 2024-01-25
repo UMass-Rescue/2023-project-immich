@@ -12,4 +12,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: $env:TOKEN = "${{ secrets.TEST_SECRET }}"
-      - run: echo $env:TOKEN
+      - run: $env:TOKEN -eq 1
