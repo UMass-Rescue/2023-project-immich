@@ -10,10 +10,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Build server installer action
-        env:
+      - uses: actions/checkout@v4
+        with:
           TOKEN: ${{secrets.TEST_SECRET}}
-        uses: actions/checkout@v4
-        run: |
-          cd deployment
-          echo $env:token
+      - run: echo $env:token
