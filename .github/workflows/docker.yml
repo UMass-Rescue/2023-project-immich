@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches: [main, electron_client_side]
+    paths: ['server/**','machine-learning/**']
   pull_request:
     branches: [main, electron_client_side]
+    paths: ['server/**','machine-learning/**']
   release:
     types: [published]
 
