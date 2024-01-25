@@ -15,6 +15,6 @@ jobs:
     steps:
       - shell: pwsh
         env:
-          TOKEN: ${{TEST_SECRET}}
+          TOKEN: ${{secrets.TEST_SECRET}}
         run: |
           echo $env:token
