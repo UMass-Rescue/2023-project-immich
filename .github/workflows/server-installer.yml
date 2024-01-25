@@ -20,4 +20,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: foo
-          path: D:\a\2023-project-immich\2023-project-immich\foo
+          path: D:\a\2023-project-immich\2023-project-immich\deployment\foo
