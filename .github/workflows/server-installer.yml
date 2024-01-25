@@ -17,6 +17,7 @@ jobs:
       - run: Invoke-WebRequest https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip -Outfile wix.zip
       - run: Expand-Archive .\wix.zip
       - run: $env:wix = "$pwd\wix"
+      - run: & (Join-Path $env:wix -ChildPath candle.exe)
       - run: cp startup.tpl startup.ps1
       - run: (Get-Content -path startup.ps1 -Raw) -replace '{TOKEN}', $env:TOKEN | Set-Content startup.ps1
         env: 
