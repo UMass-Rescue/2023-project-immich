@@ -4,7 +4,7 @@
            Language="1033"
            Manufacturer="UMass Rescue Lab"
            Name="Rescue Gallery"
-           UpgradeCode="{FFA6A5DE-5551-4A45-B3B5-0C2F78E605AA}"
+           UpgradeCode="{a77600b2-d372-4507-b0c4-f150e2c4534f}"
            Version="0.0.1">
 
     <Package InstallScope="perMachine" InstallerVersion="200" Compressed="yes" />
@@ -17,23 +17,44 @@
       <Directory Id="ProgramFilesFolder">
         <Directory Id="MY_INSTALL_LOCATION" Name="Rescue Gallery" />
       </Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="MY_PROGRAMS" Name="Rescue Gallery"/>
+      </Directory>
     </Directory>
+
+    <DirectoryRef Id="MY_PROGRAMS">
+      <Component Id="RemoveProgramsFolder" Guid="{d8cfbc4b-912e-45b4-83da-0e8c77c08227}">
+        <RemoveFolder Id="RemoveProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\RescueGallery" Name="RemoveProgramsFolder" Type="string" Value="Removed" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
 
     <ComponentGroup Directory="MY_INSTALL_LOCATION" Id="ProductComponentGroup">
       <Component Id="startup_ps1">
-        <File KeyPath="yes" Source="startup.ps1"></File>
+        <File KeyPath="yes" Source="startup.ps1" />
       </Component>
       <Component Id="docker_compose_ghcr_yml">
-        <File KeyPath="yes" Source="docker-compose.ghcr.yml"></File>
+        <File KeyPath="yes" Source="docker-compose.ghcr.yml" />
       </Component>
       <Component Id="_env">
-        <File KeyPath="yes" Source=".env"></File>
+        <File KeyPath="yes" Source=".env" />
+      </Component>
+      <!-- New component for the shortcut -->
+      <Component Id="ShortcutComponent" Guid="{68656ae3-2ddc-429d-97b4-9d515d102b0c}">
+        <Shortcut Id="StartMenuShortcut" Name="Rescue Gallery" Target="[SystemFolder]WindowsPowerShell\v1.0\powershell.exe" Arguments="-NoExit -ExecutionPolicy Bypass -File &quot;[MY_INSTALL_LOCATION]startup.ps1&quot;" Directory="ProgramMenuFolder" />
+        <RemoveFolder Id="RemoveShortcutFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\RescueGallery" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </ComponentGroup>
 
-    <Feature Id="RescueGalleryFeature">
+    <Feature Id="RescueGalleryFeature" Title="RescueGalleryFeature" Level="1">
       <ComponentGroupRef Id="ProductComponentGroup" />
+      <!-- New feature for the shortcut -->
+      <ComponentRef Id="ShortcutComponent" />
+      <ComponentRef Id="RemoveProgramsFolder" />
     </Feature>
 
   </Product>
 </Wix>
+ 
