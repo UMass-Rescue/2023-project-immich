@@ -25,7 +25,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import path from 'path';
-import { And, Brackets, FindOptionsRelations, FindOptionsWhere, In, IsNull, LessThan, Not, Repository } from 'typeorm';
+import {
+  And,
+  Brackets,
+  FindOptionsRelations,
+  FindOptionsSelect,
+  FindOptionsWhere,
+  In,
+  IsNull,
+  LessThan,
+  Not,
+  Repository,
+} from 'typeorm';
 import { AssetEntity, AssetJobStatusEntity, AssetType, ExifEntity, SmartInfoEntity } from '../entities';
 import { DummyValue, GenerateSql } from '../infra.util';
 import { Chunked, ChunkedArray, OptionalBetween, paginate } from '../infra.utils';
@@ -103,6 +114,7 @@ export class AssetRepository implements IAssetRepository {
       withExif: _withExif,
       withStacked,
       withPeople,
+      withSmartInfo,
 
       order,
     } = options;
@@ -126,7 +138,7 @@ export class AssetRepository implements IAssetRepository {
 
     const withExif = Object.keys(exifWhere).length > 0 || _withExif;
 
-    const where = _.omitBy(
+    const where: FindOptionsWhere<AssetEntity> = _.omitBy(
       {
         ownerId,
         id,
@@ -170,21 +182,28 @@ export class AssetRepository implements IAssetRepository {
       builder.leftJoinAndSelect('faces.person', 'person');
     }
 
-    if (withStacked) {
-      builder.leftJoinAndSelect('asset.stack', 'stack');
+    if (withSmartInfo) {
+      builder.leftJoinAndSelect('asset.smartInfo', 'smartInfo');
     }
 
     if (withDeleted) {
       builder.withDeleted();
     }
 
-    builder
-      .where(where)
+    builder.where(where);
+
+    if (withStacked) {
+      builder
+        .leftJoinAndSelect('asset.stack', 'stack')
+        .leftJoinAndSelect('stack.assets', 'stackedAssets')
+        .andWhere(new Brackets((qb) => qb.where('stack.primaryAssetId = asset.id').orWhere('asset.stackId IS NULL')));
+    }
+
+    return builder
       .skip(size * (page - 1))
       .take(size)
-      .orderBy('asset.fileCreatedAt', order ?? 'DESC');
-
-    return builder.getMany();
+      .orderBy('asset.fileCreatedAt', order ?? 'DESC')
+      .getMany();
   }
 
   create(asset: AssetCreate): Promise<AssetEntity> {
@@ -250,7 +269,11 @@ export class AssetRepository implements IAssetRepository {
 
   @GenerateSql({ params: [[DummyValue.UUID]] })
   @ChunkedArray()
-  getByIds(ids: string[], relations?: FindOptionsRelations<AssetEntity>): Promise<AssetEntity[]> {
+  getByIds(
+    ids: string[],
+    relations?: FindOptionsRelations<AssetEntity>,
+    select?: FindOptionsSelect<AssetEntity>,
+  ): Promise<AssetEntity[]> {
     if (!relations) {
       relations = {
         exifInfo: true,
@@ -259,12 +282,16 @@ export class AssetRepository implements IAssetRepository {
         faces: {
           person: true,
         },
-        stack: true,
+        stack: {
+          assets: true,
+        },
       };
     }
+
     return this.repository.find({
       where: { id: In(ids) },
       relations,
+      select,
       withDeleted: true,
     });
   }
@@ -325,12 +352,11 @@ export class AssetRepository implements IAssetRepository {
         deletedAt: options.trashedBefore ? And(Not(IsNull()), LessThan(options.trashedBefore)) : undefined,
       },
       relations: {
-        exifInfo: true,
-        smartInfo: true,
-        tags: true,
-        faces: {
-          person: true,
-        },
+        exifInfo: options.withExif !== false,
+        smartInfo: options.withSmartInfo !== false,
+        tags: options.withSmartInfo !== false,
+        faces: options.withFaces !== false,
+        smartSearch: options.withSmartInfo === true,
       },
       withDeleted: options.withDeleted ?? !!options.trashedBefore,
       order: {
@@ -475,7 +501,7 @@ export class AssetRepository implements IAssetRepository {
         };
         break;
 
-      case WithoutProperty.CLIP_ENCODING:
+      case WithoutProperty.SMART_SEARCH:
         relations = {
           smartSearch: true,
         };
@@ -515,6 +541,20 @@ export class AssetRepository implements IAssetRepository {
           },
           jobStatus: {
             facesRecognizedAt: IsNull(),
+          },
+        };
+        break;
+
+      case WithoutProperty.PERSON:
+        relations = {
+          faces: true,
+        };
+        where = {
+          resizePath: Not(IsNull()),
+          isVisible: true,
+          faces: {
+            assetId: Not(IsNull()),
+            personId: IsNull(),
           },
         };
         break;
@@ -687,7 +727,7 @@ export class AssetRepository implements IAssetRepository {
     const truncated = dateTrunc(options);
     return (
       this.getBuilder(options)
-        .andWhere(`${truncated} = :timeBucket`, { timeBucket })
+        .andWhere(`${truncated} = :timeBucket`, { timeBucket: timeBucket.replace(/^[+-]/, '') })
         // First sort by the day in localtime (put it in the right bucket)
         .orderBy(truncated, 'DESC')
         // and then sort by the actual time
@@ -757,16 +797,19 @@ export class AssetRepository implements IAssetRepository {
   private getBuilder(options: AssetBuilderOptions) {
     const { isArchived, isFavorite, isTrashed, albumId, personId, userIds, withStacked, exifInfo, assetType } = options;
 
-    let builder = this.repository
-      .createQueryBuilder('asset')
-      .where('asset.isVisible = true')
-      .andWhere('asset.fileCreatedAt < NOW()');
+    let builder = this.repository.createQueryBuilder('asset').where('asset.isVisible = true');
     if (assetType !== undefined) {
       builder = builder.andWhere('asset.type = :assetType', { assetType });
     }
 
+    let stackJoined = false;
+
     if (exifInfo !== false) {
-      builder = builder.leftJoinAndSelect('asset.exifInfo', 'exifInfo').leftJoinAndSelect('asset.stack', 'stack');
+      stackJoined = true;
+      builder = builder
+        .leftJoinAndSelect('asset.exifInfo', 'exifInfo')
+        .leftJoinAndSelect('asset.stack', 'stack')
+        .leftJoinAndSelect('stack.assets', 'stackedAssets');
     }
 
     if (albumId) {
@@ -797,7 +840,12 @@ export class AssetRepository implements IAssetRepository {
     }
 
     if (withStacked) {
-      builder = builder.andWhere('asset.stackParentId IS NULL');
+      if (!stackJoined) {
+        builder = builder.leftJoinAndSelect('asset.stack', 'stack').leftJoinAndSelect('stack.assets', 'stackedAssets');
+      }
+      builder = builder.andWhere(
+        new Brackets((qb) => qb.where('stack.primaryAssetId = asset.id').orWhere('asset.stackId IS NULL')),
+      );
     }
 
     return builder;

@@ -1,9 +1,16 @@
-from enum import StrEnum
+from enum import Enum
 from typing import Any, Protocol, TypedDict, TypeGuard
 
 import numpy as np
 import numpy.typing as npt
 from pydantic import BaseModel
+
+
+class StrEnum(str, Enum):
+    value: str
+
+    def __str__(self) -> str:
+        return self.value
 
 
 class TextResponse(BaseModel):
@@ -24,6 +31,11 @@ class BoundingBox(TypedDict):
 class ModelType(StrEnum):
     CLIP = "clip"
     FACIAL_RECOGNITION = "facial-recognition"
+
+
+class ModelRuntime(StrEnum):
+    ONNX = "onnx"
+    ARMNN = "armnn"
 
 
 class HasProfiling(Protocol):

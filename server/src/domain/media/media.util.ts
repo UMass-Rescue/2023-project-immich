@@ -44,6 +44,7 @@ class BaseConfig implements VideoCodecSWConfig {
       // explicitly selects the video stream instead of leaving it up to FFmpeg
       `-map 0:${videoStream.index}`,
     ];
+
     if (audioStream) {
       options.push(`-map 0:${audioStream.index}`);
     }
@@ -56,6 +57,11 @@ class BaseConfig implements VideoCodecSWConfig {
     if (this.getGopSize() > 0) {
       options.push(`-g ${this.getGopSize()}`);
     }
+
+    if (this.config.targetVideoCodec === VideoCodec.HEVC) {
+      options.push('-tag:v hvc1');
+    }
+
     return options;
   }
 
@@ -122,15 +128,24 @@ class BaseConfig implements VideoCodecSWConfig {
   }
 
   getTargetResolution(videoStream: VideoStreamInfo) {
+    let target;
     if (this.config.targetResolution === 'original') {
-      return Math.min(videoStream.height, videoStream.width);
+      target = Math.min(videoStream.height, videoStream.width);
+    } else {
+      target = Number.parseInt(this.config.targetResolution);
     }
 
-    return Number.parseInt(this.config.targetResolution);
+    if (target % 2 !== 0) {
+      target -= 1;
+    }
+
+    return target;
   }
 
   shouldScale(videoStream: VideoStreamInfo) {
-    return Math.min(videoStream.height, videoStream.width) > this.getTargetResolution(videoStream);
+    const oddDimensions = videoStream.height % 2 !== 0 || videoStream.width % 2 !== 0;
+    const largerThanTarget = Math.min(videoStream.height, videoStream.width) > this.getTargetResolution(videoStream);
+    return oddDimensions || largerThanTarget;
   }
 
   shouldToneMap(videoStream: VideoStreamInfo) {
@@ -146,7 +161,10 @@ class BaseConfig implements VideoCodecSWConfig {
   getSize(videoStream: VideoStreamInfo) {
     const smaller = this.getTargetResolution(videoStream);
     const factor = Math.max(videoStream.height, videoStream.width) / Math.min(videoStream.height, videoStream.width);
-    const larger = Math.round(smaller * factor);
+    let larger = Math.round(smaller * factor);
+    if (larger % 2 !== 0) {
+      larger -= 1;
+    }
     return this.isVideoVertical(videoStream) ? { width: smaller, height: larger } : { width: larger, height: smaller };
   }
 
@@ -344,7 +362,7 @@ export class VP9Config extends BaseConfig {
 
   getBitrateOptions() {
     const bitrates = this.getBitrateDistribution();
-    if (this.eligibleForTwoPass()) {
+    if (bitrates.max > 0 && this.eligibleForTwoPass()) {
       return [
         `-b:v ${bitrates.target}${bitrates.unit}`,
         `-minrate ${bitrates.min}${bitrates.unit}`,

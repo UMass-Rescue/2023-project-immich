@@ -633,6 +633,7 @@ class GalleryViewerPage extends HookConsumerWidget {
       );
     }
 
+    // TODO: Migrate to a custom bottom bar and handle long press to delete
     Widget buildBottomBar() {
       // !!!! itemsList and actionlist should always be in sync
       final itemsList = [
@@ -750,15 +751,16 @@ class GalleryViewerPage extends HookConsumerWidget {
       }
     });
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: WillPopScope(
-        onWillPop: () async {
-          // Change immersive mode back to normal "edgeToEdge" mode
-          await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-          return true;
-        },
-        child: Stack(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) {
+        // Change immersive mode back to normal "edgeToEdge" mode
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+        context.pop();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
           children: [
             PhotoViewGallery.builder(
               scaleStateChangedCallback: (state) {

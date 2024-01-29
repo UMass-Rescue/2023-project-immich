@@ -61,7 +61,7 @@ class UserResponseDto {
 
   int? quotaSizeInBytes;
 
-  int quotaUsageInBytes;
+  int? quotaUsageInBytes;
 
   bool shouldChangePassword;
 
@@ -71,22 +71,22 @@ class UserResponseDto {
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is UserResponseDto &&
-     other.avatarColor == avatarColor &&
-     other.createdAt == createdAt &&
-     other.deletedAt == deletedAt &&
-     other.email == email &&
-     other.externalPath == externalPath &&
-     other.id == id &&
-     other.isAdmin == isAdmin &&
-     other.memoriesEnabled == memoriesEnabled &&
-     other.name == name &&
-     other.oauthId == oauthId &&
-     other.profileImagePath == profileImagePath &&
-     other.quotaSizeInBytes == quotaSizeInBytes &&
-     other.quotaUsageInBytes == quotaUsageInBytes &&
-     other.shouldChangePassword == shouldChangePassword &&
-     other.storageLabel == storageLabel &&
-     other.updatedAt == updatedAt;
+    other.avatarColor == avatarColor &&
+    other.createdAt == createdAt &&
+    other.deletedAt == deletedAt &&
+    other.email == email &&
+    other.externalPath == externalPath &&
+    other.id == id &&
+    other.isAdmin == isAdmin &&
+    other.memoriesEnabled == memoriesEnabled &&
+    other.name == name &&
+    other.oauthId == oauthId &&
+    other.profileImagePath == profileImagePath &&
+    other.quotaSizeInBytes == quotaSizeInBytes &&
+    other.quotaUsageInBytes == quotaUsageInBytes &&
+    other.shouldChangePassword == shouldChangePassword &&
+    other.storageLabel == storageLabel &&
+    other.updatedAt == updatedAt;
 
   @override
   int get hashCode =>
@@ -103,7 +103,7 @@ class UserResponseDto {
     (oauthId.hashCode) +
     (profileImagePath.hashCode) +
     (quotaSizeInBytes == null ? 0 : quotaSizeInBytes!.hashCode) +
-    (quotaUsageInBytes.hashCode) +
+    (quotaUsageInBytes == null ? 0 : quotaUsageInBytes!.hashCode) +
     (shouldChangePassword.hashCode) +
     (storageLabel == null ? 0 : storageLabel!.hashCode) +
     (updatedAt.hashCode);
@@ -141,7 +141,11 @@ class UserResponseDto {
     } else {
     //  json[r'quotaSizeInBytes'] = null;
     }
+    if (this.quotaUsageInBytes != null) {
       json[r'quotaUsageInBytes'] = this.quotaUsageInBytes;
+    } else {
+    //  json[r'quotaUsageInBytes'] = null;
+    }
       json[r'shouldChangePassword'] = this.shouldChangePassword;
     if (this.storageLabel != null) {
       json[r'storageLabel'] = this.storageLabel;
@@ -161,8 +165,8 @@ class UserResponseDto {
 
       return UserResponseDto(
         avatarColor: UserAvatarColor.fromJson(json[r'avatarColor'])!,
-        createdAt: mapDateTime(json, r'createdAt', '')!,
-        deletedAt: mapDateTime(json, r'deletedAt', ''),
+        createdAt: mapDateTime(json, r'createdAt', r'')!,
+        deletedAt: mapDateTime(json, r'deletedAt', r''),
         email: mapValueOfType<String>(json, r'email')!,
         externalPath: mapValueOfType<String>(json, r'externalPath'),
         id: mapValueOfType<String>(json, r'id')!,
@@ -172,10 +176,10 @@ class UserResponseDto {
         oauthId: mapValueOfType<String>(json, r'oauthId')!,
         profileImagePath: mapValueOfType<String>(json, r'profileImagePath')!,
         quotaSizeInBytes: mapValueOfType<int>(json, r'quotaSizeInBytes'),
-        quotaUsageInBytes: mapValueOfType<int>(json, r'quotaUsageInBytes')!,
+        quotaUsageInBytes: mapValueOfType<int>(json, r'quotaUsageInBytes'),
         shouldChangePassword: mapValueOfType<bool>(json, r'shouldChangePassword')!,
         storageLabel: mapValueOfType<String>(json, r'storageLabel'),
-        updatedAt: mapDateTime(json, r'updatedAt', '')!,
+        updatedAt: mapDateTime(json, r'updatedAt', r'')!,
       );
     }
     return null;
