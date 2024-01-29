@@ -3,7 +3,7 @@ version: "3.8"
 name: immich-prod
 
 x-server-build: &server-common
-  image: ghcr.io/gbiss/immich-server:latest
+  image: ghcr.io/gbiss/immich-server:packaging
   build:
     context: ../
     dockerfile: server/Dockerfile
@@ -39,7 +39,7 @@ services:
 
   immich-machine-learning:
     container_name: immich_machine_learning
-    image: ghcr.io/gbiss/immich-machine-learning:latest
+    image: ghcr.io/gbiss/immich-machine-learning:packaging
     build:
       context: ../machine-learning
       dockerfile: Dockerfile
