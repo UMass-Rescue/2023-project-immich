@@ -1,6 +1,7 @@
 name: Build Server Installer
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main,electron_client_side ]
     paths: ['deployment/**']

@@ -1,6 +1,7 @@
 name: Build Electron
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main,electron_client_side ]
     paths: ['electron/**']
