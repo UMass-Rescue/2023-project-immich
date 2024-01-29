@@ -3,10 +3,10 @@ name: Build Server Installer
 on:
   workflow_dispatch:
   push:
-    branches: [ main,electron_client_side ]
+    branches: [ main,packaging ]
     paths: ['deployment/**']
   pull_request:
-    branches: [ main,electron_client_side ]
+    branches: [ main,packaging ]
     paths: ['deployment/**']
 
 jobs:
