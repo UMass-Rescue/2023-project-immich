@@ -3,10 +3,10 @@ name: Docker
 on:
   workflow_dispatch:
   push:
-    branches: [main, packaging]
+    branches: [mvp]
     paths: ['server/**','machine-learning/**']
   pull_request:
-    branches: [main, packaging]
+    branches: [mvp]
     paths: ['server/**','machine-learning/**']
   release:
     types: [published]
