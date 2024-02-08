@@ -3,11 +3,11 @@ name: Docker
 on:
   workflow_dispatch:
   push:
-    branches: [mvp]
-    paths: ['server/**','machine-learning/**']
+    branches: [mvp,shims]
+    #paths: ['server/**','machine-learning/**']
   pull_request:
-    branches: [mvp]
-    paths: ['server/**','machine-learning/**']
+    branches: [mvp,shims]
+    #paths: ['server/**','machine-learning/**']
   release:
     types: [published]
 
@@ -63,6 +63,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Run shims
+        id: shim-target
+        run: |
+          bash shims/album.sh
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.0.0
