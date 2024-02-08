@@ -3,10 +3,10 @@ name: Build Server Installer
 on:
   workflow_dispatch:
   push:
-    branches: [ main,packaging ]
+    branches: [ mvp ]
     paths: ['deployment/**']
   pull_request:
-    branches: [ main,packaging ]
+    branches: [ mvp ]
     paths: ['deployment/**']
 
 jobs:

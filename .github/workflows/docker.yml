@@ -3,10 +3,10 @@ name: Docker
 on:
   workflow_dispatch:
   push:
-    branches: [main, packaging]
+    branches: [mvp]
     paths: ['server/**','machine-learning/**']
   pull_request:
-    branches: [main, packaging]
+    branches: [mvp]
     paths: ['server/**','machine-learning/**']
   release:
     types: [published]
@@ -46,7 +46,7 @@ jobs:
             platforms: linux/amd64
             device: openvino
             suffix: -openvino
-          
+
           - image: immich-machine-learning
             context: machine-learning
             file: machine-learning/Dockerfile
@@ -59,6 +59,7 @@ jobs:
             file: server/Dockerfile
             platforms: linux/amd64,linux/arm64
             device: cpu
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4

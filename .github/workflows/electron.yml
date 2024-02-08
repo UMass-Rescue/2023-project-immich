@@ -3,10 +3,10 @@ name: Build Electron
 on:
   workflow_dispatch:
   push:
-    branches: [ main,packaging ]
+    branches: [ mvp ]
     paths: ['electron/**']
   pull_request:
-    branches: [ main,packaging ]
+    branches: [ mvp ]
     paths: ['electron/**']
 
 jobs:

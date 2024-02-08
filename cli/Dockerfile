@@ -1,19 +1,19 @@
-FROM ghcr.io/immich-app/base-server-dev:20240125@sha256:93500f94a6008c27123499c8918efa7c0cf1b0d08dba4ede7239d2bc6fa3cc27 as test
+FROM node:20-alpine3.19 as core
 
-WORKDIR /usr/src/app/server
-COPY server/package.json server/package-lock.json ./
+WORKDIR /usr/src/open-api/typescript-sdk
+COPY open-api/typescript-sdk/package*.json open-api/typescript-sdk/tsconfig*.json ./
 RUN npm ci
-COPY ./server/ .
+COPY open-api/typescript-sdk/ ./
+RUN npm run build
 
-WORKDIR /usr/src/app/cli
+WORKDIR /usr/src/app
+
 COPY cli/package.json cli/package-lock.json ./
 RUN npm ci
-COPY ./cli/ .
 
-FROM ghcr.io/immich-app/base-server-prod:20240125@sha256:6cafd57bb0d048ad03719c8e2ca5af3c59e421d75da11e9843d29db749b65eb7
+COPY cli .
+RUN npm run build
 
-VOLUME /usr/src/app/upload
+WORKDIR /import
 
-EXPOSE 3001
-
-ENTRYPOINT ["tini", "--", "/bin/sh"]
+ENTRYPOINT ["node", "/usr/src/app/dist"]
